@@ -28,7 +28,7 @@ user=$2
 database=$3
 filepath=$4
 
-if [ "$extension" != "csv" ] || [ "$extension" != "sql" ] ; then
+if [ "$extension" != "csv" ] && [ "$extension" != "sql" ] ; then
  echo -e "wrong file type, only support csv or sql\n"
  exit
 fi
