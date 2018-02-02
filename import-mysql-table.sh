@@ -14,8 +14,8 @@
 
 # example: ./import.sh 192.168.163.133 root CSV_DB ./convert/item_drop.csv
 
-if [ $# != 4 ] ; then
-	echo 'usage: ./import.sh host username dbname filename.csv'
+if ( [ $# == 1 ] && [ $1 == '-h' ] ) ||  [ $# -lt 4 ] ; then
+	echo "Usage: $0 host username dbname filename [password]"
 	exit
 fi
 
@@ -27,14 +27,17 @@ host=$1
 user=$2
 database=$3
 filepath=$4
+password=$5
 
 if [ "$extension" != "csv" ] && [ "$extension" != "sql" ] ; then
  echo -e "wrong file type, only support csv or sql\n"
  exit
 fi
 
-read -s -p "Password: " password 
-echo -e "\n"
+if [ $# -lt 5 ] ; then
+	read -s -p "Password: " password 
+	echo -e "\n"
+fi
 
 while ! mysql -u $user -p$password -h $host -e ";" ; do
 	echo -e "$host\n"
