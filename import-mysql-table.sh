@@ -51,9 +51,14 @@ mysql --host="$host" --user="$user" --password=$password --database="$database" 
 if [ "$extension" == "csv" ]; then
 	csvsql --db "mysql://$user:$password@$host:3306/$database?charset=utf8" --tables $tablename -e "utf8" --insert $filepath
 	mkdir -p 'export'
-	mysqldump -h "$host" -u $user -p$password $database $tablename > "./export/$tablename.sql"
+	mysqldump --max-allowed-packet=512M -h "$host" -u $user -p$password $database $tablename > "./export/$tablename.sql"
 else
-	mysql -h "$host" -u $user -p$password $database < $filepath
+	# this is using mysqldump, which default is 16M, which is defined in /etc/my.conf	
+	# do not need to use --max_allowed_packet=100M
+	# ref:
+	# https://stackoverflow.com/questions/93128/mysql-error-1153-got-a-packet-bigger-than-max-allowed-packet-bytes
+	# how to update csvsql
+	mysql -h "$host" -u $user -p$password $database < $filepath	
 fi
 
 echo -e "\ndone!"

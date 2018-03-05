@@ -17,6 +17,13 @@ filename=$(basename "$1")
 # Example output of chardet: 'box.csv: GB2312 with confidence 0.360492711041'
 CHARSET="$(chardet "$1" | awk -F ":" '{print $2}'  | awk -F "with" '{print $1}')"
 
+echo origin charset is $CHARSET
+
+if [ $CHARSET == "GB2312" ]; then	
+	CHARSET=GB18030
+	echo "what?"
+fi
+
 if [ "$CHARSET" != utf-8 ]; then
 	mkdir -p ./convert	
 	iconv -f "$CHARSET" -t utf8 "$1" -o ./convert/$filename
